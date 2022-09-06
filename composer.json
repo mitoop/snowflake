@@ -1,0 +1,20 @@
+{
+  "name": "mitoop/snowflake",
+  "description": "snowflake",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "徐夏冰",
+      "email": "me@mitoop.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Mitoop\\Snowflake\\": "src"
+    }
+  }
+}
