@@ -35,6 +35,11 @@ final class Snowflake
         $this->sequenceStrategy = $strategy ?? new RandomSequenceStrategy();
     }
 
+    public function id(): int
+    {
+        return $this->getId();
+    }
+
     public function getId(): int
     {
         $currentMillisecond = $this->getCurrentMillisecond();
