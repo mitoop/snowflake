@@ -75,7 +75,7 @@ final class Snowflake
             throw new InvalidArgumentException('incorrect epoch string, correct epoch string like : 2020-10-24 10:24:00');
         }
 
-        if (time() - $epoch) {
+        if (time() - $epoch < 0) {
             throw new InvalidArgumentException('the epoch cannot be greater than the current time');
         }
 

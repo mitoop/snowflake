@@ -20,7 +20,7 @@ $snowflake = new \Mitoop\Snowflake\Snowflake;
 // $snowflake = new \Mitoop\Snowflake\Snowflake(new RandomSequenceStrategy);
 
 // 设置开始时间
-$snowflake->setEpoch('2021-09-08 10:10:10)')
+$snowflake->setEpoch('2020-10-24 10:24:00');
 
 // 设置数据中心ID及机器ID(范围: 0-31) 不设置就用随机数
 $snowflake->setDatacenterId(1);
