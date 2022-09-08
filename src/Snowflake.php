@@ -13,10 +13,12 @@ final class Snowflake
     private const SEQUENCE_BITS = 12;
     private const WORKER_ID_BITS = 5;
     private const DATACENTER_ID_BITS = 5;
+    private const TIMESTAMP_BITS = 41;
 
     private const MAX_SEQUENCE = -1 ^ (-1 << self::SEQUENCE_BITS);
     private const MAX_WORK_ID = -1 ^ (-1 << self::WORKER_ID_BITS);
     private const MAX_DATACENTER_ID = -1 ^ (-1 << self::DATACENTER_ID_BITS);
+    private const MAX_TIMESTAMP = -1 ^ (-1 << self::TIMESTAMP_BITS);
 
     private const WORK_ID_SHIFT = self::SEQUENCE_BITS;
     private const DATACENTER_ID_SHIFT = self::SEQUENCE_BITS + self::WORKER_ID_BITS;
@@ -65,8 +67,18 @@ final class Snowflake
         return (int) $this->sequenceStrategy->generate($currentTime);
     }
 
-    public function setEpoch(int $epoch): Snowflake
+    public function setEpoch(string $epoch): Snowflake
     {
+        $epoch = strtotime($epoch);
+
+        if (false === $epoch || $epoch < 0) {
+            throw new InvalidArgumentException('incorrect epoch string, correct epoch string like : 2020-10-24 10:24:00');
+        }
+
+        if (time() - $epoch) {
+            throw new InvalidArgumentException('the epoch cannot be greater than the current time');
+        }
+
         $this->epoch = $epoch * 1000;
 
         return $this;
