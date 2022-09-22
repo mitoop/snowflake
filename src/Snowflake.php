@@ -1,36 +1,40 @@
 <?php
 
-/*
- * Today is the tomorrow you promised to act yesterday.
- */
-
 namespace Mitoop\Snowflake;
 
 use InvalidArgumentException;
 
 final class Snowflake
 {
-    private const SEQUENCE_BITS = 12;
-    private const WORKER_ID_BITS = 5;
-    private const DATACENTER_ID_BITS = 5;
-    private const TIMESTAMP_BITS = 41;
+    const SEQUENCE_BITS = 12;
 
-    private const MAX_SEQUENCE = -1 ^ (-1 << self::SEQUENCE_BITS);
-    private const MAX_WORK_ID = -1 ^ (-1 << self::WORKER_ID_BITS);
-    private const MAX_DATACENTER_ID = -1 ^ (-1 << self::DATACENTER_ID_BITS);
-    private const MAX_TIMESTAMP = -1 ^ (-1 << self::TIMESTAMP_BITS);
+    const WORKER_ID_BITS = 5;
 
-    private const WORK_ID_SHIFT = self::SEQUENCE_BITS;
-    private const DATACENTER_ID_SHIFT = self::SEQUENCE_BITS + self::WORKER_ID_BITS;
-    private const TIMESTAMP_SHIFT = self::SEQUENCE_BITS + self::WORKER_ID_BITS + self::DATACENTER_ID_BITS;
+    const DATACENTER_ID_BITS = 5;
 
-    private int $datacenterId = -1;
+    // const TIMESTAMP_BITS = 41;
 
-    private int $workerId = -1;
+    const MAX_SEQUENCE = -1 ^ (-1 << self::SEQUENCE_BITS);
 
-    private int $epoch = 1643738522000;
+    const MAX_WORK_ID = -1 ^ (-1 << self::WORKER_ID_BITS);
 
-    private SequenceStrategyInterface $sequenceStrategy;
+    const MAX_DATACENTER_ID = -1 ^ (-1 << self::DATACENTER_ID_BITS);
+
+    // const MAX_TIMESTAMP = -1 ^ (-1 << self::TIMESTAMP_BITS);
+
+    const WORK_ID_SHIFT = self::SEQUENCE_BITS;
+
+    const DATACENTER_ID_SHIFT = self::SEQUENCE_BITS + self::WORKER_ID_BITS;
+
+    const TIMESTAMP_SHIFT = self::SEQUENCE_BITS + self::WORKER_ID_BITS + self::DATACENTER_ID_BITS;
+
+    private $datacenterId = -1;
+
+    private $workerId = -1;
+
+    private $epoch = 1643738522000;
+
+    private $sequenceStrategy;
 
     public function __construct(SequenceStrategyInterface $strategy = null)
     {
@@ -54,7 +58,7 @@ final class Snowflake
         return (($currentMillisecond - $this->getEpoch()) << self::TIMESTAMP_SHIFT) |
                ($this->getDatacenterId() << self::DATACENTER_ID_SHIFT) |
                ($this->getWorkerId() << self::WORK_ID_SHIFT) |
-               ($sequence);
+               $sequence;
     }
 
     private function getCurrentMillisecond(): int

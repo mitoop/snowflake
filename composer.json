@@ -5,16 +5,24 @@
   "license": "MIT",
   "authors": [
     {
-      "name": "徐夏冰",
+      "name": "mitoop",
       "email": "me@mitoop.com"
     }
   ],
   "require": {
-    "php": ">=7.4"
+    "php": ">=7.0"
   },
   "autoload": {
     "psr-4": {
       "Mitoop\\Snowflake\\": "src"
     }
+  },
+  "require-dev": {
+    "laravel/pint": "^1.2"
+  },
+  "scripts": {
+    "pint":[
+      "./vendor/bin/pint --config=pint.json"
+    ]
   }
 }
