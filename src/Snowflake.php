@@ -88,7 +88,7 @@ final class Snowflake
         return $this;
     }
 
-    public function getEpoch(): int
+    private function getEpoch(): int
     {
         return $this->epoch;
     }
@@ -104,7 +104,7 @@ final class Snowflake
         return $this;
     }
 
-    public function getDatacenterId(): int
+    private function getDatacenterId(): int
     {
         return -1 === $this->datacenterId ? random_int(0, self::MAX_DATACENTER_ID) : $this->datacenterId;
     }
@@ -120,9 +120,16 @@ final class Snowflake
         return $this;
     }
 
-    public function getWorkerId(): int
+    private function getWorkerId(): int
     {
         return -1 === $this->workerId ? random_int(0, self::MAX_WORK_ID) : $this->workerId;
+    }
+
+    public function setSequenceStrategy(SequenceStrategyInterface $strategy): Snowflake
+    {
+        $this->sequenceStrategy = $strategy;
+
+        return $this;
     }
 
     public static function getMaxSequence(): int
