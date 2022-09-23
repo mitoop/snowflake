@@ -12,15 +12,11 @@ final class Snowflake
 
     const DATACENTER_ID_BITS = 5;
 
-    // const TIMESTAMP_BITS = 41;
-
     const MAX_SEQUENCE = -1 ^ (-1 << self::SEQUENCE_BITS);
 
     const MAX_WORK_ID = -1 ^ (-1 << self::WORKER_ID_BITS);
 
     const MAX_DATACENTER_ID = -1 ^ (-1 << self::DATACENTER_ID_BITS);
-
-    // const MAX_TIMESTAMP = -1 ^ (-1 << self::TIMESTAMP_BITS);
 
     const WORK_ID_SHIFT = self::SEQUENCE_BITS;
 
@@ -32,13 +28,23 @@ final class Snowflake
 
     private $workerId = -1;
 
-    private $epoch = 1643738522000;
+    private $epoch;
 
     private $sequenceStrategy;
 
     public function __construct(string $epoch)
     {
-        $this->setEpoch($epoch);
+        $epoch = strtotime($epoch);
+
+        if (false === $epoch || $epoch < 0) {
+            throw new InvalidArgumentException('incorrect epoch string, correct epoch string like : 2020-10-24 10:24:00');
+        }
+
+        if (time() - $epoch < 0) {
+            throw new InvalidArgumentException('the epoch cannot be greater than the current time');
+        }
+
+        $this->epoch = $epoch * 1000;
     }
 
     public function id(): int
@@ -55,7 +61,7 @@ final class Snowflake
             $currentMillisecond = $this->getCurrentMillisecond();
         }
 
-        return (($currentMillisecond - $this->getEpoch()) << self::TIMESTAMP_SHIFT) |
+        return (($currentMillisecond - $this->epoch) << self::TIMESTAMP_SHIFT) |
                ($this->getDatacenterId() << self::DATACENTER_ID_SHIFT) |
                ($this->getWorkerId() << self::WORK_ID_SHIFT) |
                $sequence;
@@ -69,28 +75,6 @@ final class Snowflake
     private function getSequence(int $currentTime): int
     {
         return (int) $this->getSequenceStrategy()->generate($currentTime);
-    }
-
-    private function setEpoch(string $epoch): Snowflake
-    {
-        $epoch = strtotime($epoch);
-
-        if (false === $epoch || $epoch < 0) {
-            throw new InvalidArgumentException('incorrect epoch string, correct epoch string like : 2020-10-24 10:24:00');
-        }
-
-        if (time() - $epoch < 0) {
-            throw new InvalidArgumentException('the epoch cannot be greater than the current time');
-        }
-
-        $this->epoch = $epoch * 1000;
-
-        return $this;
-    }
-
-    private function getEpoch(): int
-    {
-        return $this->epoch;
     }
 
     public function setDatacenterId(int $datacenterId): Snowflake
