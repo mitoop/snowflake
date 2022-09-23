@@ -36,9 +36,9 @@ final class Snowflake
 
     private $sequenceStrategy;
 
-    public function __construct(SequenceStrategyInterface $strategy = null)
+    public function __construct(string $epoch)
     {
-        $this->sequenceStrategy = $strategy ?? new RandomSequenceStrategy();
+        $this->setEpoch($epoch);
     }
 
     public function id(): int
@@ -68,10 +68,10 @@ final class Snowflake
 
     private function getSequence(int $currentTime): int
     {
-        return (int) $this->sequenceStrategy->generate($currentTime);
+        return (int) $this->getSequenceStrategy()->generate($currentTime);
     }
 
-    public function setEpoch(string $epoch): Snowflake
+    private function setEpoch(string $epoch): Snowflake
     {
         $epoch = strtotime($epoch);
 
@@ -130,6 +130,15 @@ final class Snowflake
         $this->sequenceStrategy = $strategy;
 
         return $this;
+    }
+
+    public function getSequenceStrategy(): SequenceStrategyInterface
+    {
+        if (is_null($this->sequenceStrategy)) {
+            $this->sequenceStrategy = new RandomSequenceStrategy();
+        }
+
+        return $this->sequenceStrategy;
     }
 
     public static function getMaxSequence(): int

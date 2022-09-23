@@ -13,18 +13,15 @@ $ composer require mitoop/snowflake
 
 ## 使用
 ```php
-$snowflake = new \Mitoop\Snowflake\Snowflake;
+use Mitoop\Snowflake\Snowflake;
 
-// 指定序列号策略，默认用随机策略
-// $snowflake = new \Mitoop\Snowflake\Snowflake(new RandomSequenceStrategy);
-
-// 设置纪元时间
-$snowflake->setEpoch('2020-10-24 10:24:00');
-
+// 初始化
+$snowflake = new Snowflake('2020-10-24 10:24:00');
 // 设置数据中心ID及机器ID(范围: 0-31)，默认用随机数
 $snowflake->setDatacenterId(1);
 $snowflake->setWorkerId(1);
-
+// 设置生成序列号策略 不设置默认就是用的随机数策略
+$snowflake->setSequenceStrategy(new RandomSequenceStrategy());
 // here we go
 $snowflake->id();
 ```
