@@ -1,6 +1,6 @@
 <?php
 
-namespace Mitoop\Snowflake;
+namespace Mitoop;
 
 use InvalidArgumentException;
 
