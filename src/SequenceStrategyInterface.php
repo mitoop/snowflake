@@ -1,6 +1,6 @@
 <?php
 
-namespace Mitoop;
+namespace Mitoop\Snowflake;
 
 interface SequenceStrategyInterface
 {
