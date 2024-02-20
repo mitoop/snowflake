@@ -36,7 +36,7 @@ final class Snowflake
     {
         $epoch = strtotime($epoch);
 
-        if (false === $epoch || $epoch < 0) {
+        if ($epoch === false || $epoch < 0) {
             throw new InvalidArgumentException('incorrect epoch string, correct epoch string like : 2020-10-24 10:24:00');
         }
 
@@ -67,6 +67,27 @@ final class Snowflake
                $sequence;
     }
 
+    public function parseId($id, bool $transform = false)
+    {
+        $idBinStr = decbin($id);
+
+        $data = [
+            'timestamp' => substr($idBinStr, 0, -self::TIMESTAMP_SHIFT),
+            'datacenter_id' => substr($idBinStr, -self::TIMESTAMP_SHIFT, self::DATACENTER_ID_BITS),
+            'worker_id' => substr($idBinStr, -self::DATACENTER_ID_SHIFT, self::WORKER_ID_BITS),
+            'sequence' => substr($idBinStr, -self::WORK_ID_SHIFT),
+        ];
+
+        if ($transform) {
+            foreach ($data as &$value) {
+                $value = bindec($value);
+            }
+            unset($value);
+        }
+
+        return $data;
+    }
+
     private function getCurrentMillisecond(): int
     {
         return (int) (microtime(true) * 1000);
@@ -90,7 +111,7 @@ final class Snowflake
 
     private function getDatacenterId(): int
     {
-        return -1 === $this->datacenterId ? random_int(0, self::MAX_DATACENTER_ID) : $this->datacenterId;
+        return $this->datacenterId === -1 ? random_int(0, self::MAX_DATACENTER_ID) : $this->datacenterId;
     }
 
     public function setWorkerId(int $workerId): Snowflake
@@ -106,7 +127,7 @@ final class Snowflake
 
     private function getWorkerId(): int
     {
-        return -1 === $this->workerId ? random_int(0, self::MAX_WORK_ID) : $this->workerId;
+        return $this->workerId === -1 ? random_int(0, self::MAX_WORK_ID) : $this->workerId;
     }
 
     public function setSequenceStrategy(SequenceStrategyInterface $strategy): Snowflake
