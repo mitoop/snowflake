@@ -3,7 +3,7 @@
 namespace Mitoop\Snowflake;
 
 use Redis;
-use UnexpectedValueException;
+use RuntimeException;
 
 class RedisSequenceStrategy implements SequenceStrategyInterface
 {
@@ -36,7 +36,7 @@ LUA;
         $sequence = $this->redis->eval($lua, [$this->cachePrefix.$currentTime, 0, 5], 1);
 
         if ($sequence === false) {
-            throw new UnexpectedValueException('Redis failed to generate a sequence.');
+            throw new RuntimeException('Redis sequence eval failed: '.$this->redis->getLastError());
         }
 
         return $sequence;
