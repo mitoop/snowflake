@@ -14,4 +14,9 @@ class Redis
 
         return $this->result;
     }
+
+    public function getLastError()
+    {
+        return $this->result === false ? 'stub eval failed' : null;
+    }
 }

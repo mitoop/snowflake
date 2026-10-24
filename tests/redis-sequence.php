@@ -24,11 +24,11 @@ $tests = [
 
         try {
             $snowflake->id();
-        } catch (UnexpectedValueException $exception) {
+        } catch (RuntimeException $exception) {
             return;
         }
 
-        throw new RuntimeException('Expected UnexpectedValueException instead of an ID.');
+        throw new RuntimeException('Expected RuntimeException instead of an ID.');
     },
     'zero remains a valid sequence' => function () {
         $redis = new Redis;

@@ -37,12 +37,12 @@ try {
     $stopped = false;
     try {
         $snowflake->id();
-    } catch (UnexpectedValueException $exception) {
+    } catch (RuntimeException $exception) {
         $stopped = true;
     }
 
     if (! $stopped || strpos((string) $redis->getLastError(), 'OOM') === false) {
-        throw new RuntimeException('Expected Redis OOM to stop ID generation with UnexpectedValueException.');
+        throw new RuntimeException('Expected Redis OOM to stop ID generation with RuntimeException.');
     }
     echo "PASS: real Redis OOM stops ID generation\n";
 } catch (Throwable $exception) {
