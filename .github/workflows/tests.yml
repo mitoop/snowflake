@@ -1,0 +1,43 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['7.0', '7.4', '8.3']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+      - run: php -n tests/redis-sequence.php
+
+  redis:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:5.0
+        ports:
+          - 6379/tcp
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: redis-6.1.0
+          coverage: none
+      - run: php tests/redis-integration.php
+        env:
+          SNOWFLAKE_TEST_REDIS_ISOLATED: '1'
+          SNOWFLAKE_TEST_REDIS_PORT: ${{ job.services.redis.ports[6379] }}

@@ -21,6 +21,8 @@
     "laravel/pint": "^1.2"
   },
   "scripts": {
+    "test": "@php -n tests/redis-sequence.php",
+    "test:redis": "@php tests/redis-integration.php",
     "pint":[
       "./vendor/bin/pint --config=pint.json"
     ]
